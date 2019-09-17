@@ -15,24 +15,23 @@ import javax.security.auth.login.LoginException;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(JdaProperties.class)
+@EnableConfigurationProperties(DiscordProperties.class)
 public class JdaConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(JdaConfiguration.class);
 
     @Bean
-    public JDA jda(TokenProvider tokenProvider,
-                   JdaProperties props,
+    public JDA jda(DiscordProperties props,
                    List<EventListener> eventListeners)
             throws LoginException, InterruptedException {
-        String token = tokenProvider.getToken();
+        LOG.info("Starting JDA.");
         JDA jda = new JDABuilder(AccountType.BOT).
                 setGame(Game.playing(props.getGame())).
-                setToken(token).
+                setToken(props.getToken()).
                 addEventListener(eventListeners.toArray()).
                 build().
                 awaitReady();
-        LOG.info("JDA status: {}", jda.getStatus());
+        LOG.info("JDA status: {}.", jda.getStatus());
         return jda;
     }
 }
